@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shadow Fitness - Become the S-Rank</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Sound Effects -->
+  <audio id="levelUpSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio>
+  <audio id="questSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto"></audio>
+  <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-14.mp3" preload="auto"></audio>
+</head>
+<body>
+  <div class="container">
+    <!-- Profile Card -->
+<section class="profile-card">
+  <h2>👤 Your Profile</h2>
+  <div id="profileDisplay">
+    <div class="profile-avatar">
+      <img id="profileImage" src="" alt="Profile" />
+      <div class="level-circle" id="levelCircle">Lv<span id="levelTop">1</span></div>
+    </div>
+    <p><strong>Name:</strong> <span id="profileName">Unknown Warrior</span></p>
+    
+    <!-- ✅ ADD THIS LINE FOR TITLE -->
+    <p><strong>Title:</strong> <span id="profileTitle">The Beginner</span></p>
+    
+    <div class="rank-badge" id="rankBadge">B-Rank</div>
+    <p><strong>Class:</strong> <span id="profileClass">Warrior</span></p>
+    <button onclick="playSound('clickSound'); toggleProfileEdit()">✏️ Edit</button>
+  </div>
+
+  <div id="profileEdit" style="display: none;">
+    <input type="text" id="editName" placeholder="Your Name" />
+    
+    <!-- ✅ Make sure this input exists (it does!) -->
+    <input type="text" id="editTitle" placeholder="Title (e.g. Gym Monarch)" />
+    
+    <input type="text" id="editClass" placeholder="Class (e.g. Warrior, Mage)" />
+    <input type="url" id="editImage" placeholder="Image URL" />
+    <button onclick="playSound('clickSound'); saveProfile()">💾 Save</button>
+    <button onclick="toggleProfileEdit()">Cancel</button>
+  </div>
+</section>
+
+    <header>
+      <h1 data-glow="⚔️ Shadow Fitness">⚔️ Shadow Fitness</h1>
+      <p class="subtitle">The weakest become the strongest.</p>
+    </header>
+
+    <!-- Streak Dashboard -->
+    <section class="streak-dashboard">
+      <h2>🔥 Daily Streak</h2>
+      <div class="streak-card">
+        <p>You've been active for <strong><span id="streakCount">0</span> days</strong> in a row!</p>
+        <div class="streak-progress" id="streakProgress">
+          <div class="day"></div>
+          <div class="day"></div>
+          <div class="day"></div>
+          <div class="day"></div>
+          <div class="day"></div>
+          <div class="day"></div>
+          <div class="day"></div>
+        </div>
+        <p class="streak-reward">Reach 7 days for +1 Ability Point!</p>
+      </div>
+    </section>
+
+    <!-- Character Status Panel -->
+    <section class="status-panel">
+      <h2>Character Status</h2>
+      <div class="stat">
+        <strong>Level:</strong> <span id="level">1</span>
+      </div>
+      <div class="stat">
+        <strong>EXP:</strong> <span id="exp">0</span> / <span id="nextLevelExp">100</span>
+      </div>
+      <progress id="expBar" value="0" max="100"></progress>
+      <p class="level-up-msg" id="levelUpMsg"></p>
+    </section>
+
+    <!-- Ability Points Panel -->
+    <section class="abilities">
+      <h2>Ability Tree</h2>
+      <p>You have <span id="ap">0</span> Ability Points to distribute.</p>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <h3>💪 Strength</h3>
+          <p>Level: <span id="str">1</span></p>
+          <button onclick="playSound('clickSound'); allocateAP('str')">+</button>
+        </div>
+        <div class="stat-box">
+          <h3>🦵 Agility</h3>
+          <p>Level: <span id="agi">1</span></p>
+          <button onclick="playSound('clickSound'); allocateAP('agi')">+</button>
+        </div>
+        <div class="stat-box">
+          <h3>❤️ Vitality</h3>
+          <p>Level: <span id="vit">1</span></p>
+          <button onclick="playSound('clickSound'); allocateAP('vit')">+</button>
+        </div>
+        <div class="stat-box">
+          <h3>🧠 Energy</h3>
+          <p>Level: <span id="ene">1</span></p>
+          <button onclick="playSound('clickSound'); allocateAP('ene')">+</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quests -->
+    <section class="quests">
+      <h2>Daily Quests</h2>
+      <button onclick="playSound('questSound'); completeQuest('Push-Ups', 20)">20 Push-Ups (+20 EXP)</button>
+      <button onclick="playSound('questSound'); completeQuest('Squats', 30)">30 Squats (+30 EXP)</button>
+      <button onclick="playSound('questSound'); completeQuest('Plank', 15)">1-Minute Plank (+15 EXP)</button>
+      <button onclick="playSound('questSound'); completeQuest('Jumping Jacks', 25)">50 Jumping Jacks (+25 EXP)</button>
+    </section>
+
+    <!-- Custom Tasks -->
+    <section class="custom-tasks">
+      <h2>Add Custom Quest</h2>
+      <p>Create your own workout challenges</p>
+      <div class="task-input">
+        <input type="text" id="taskName" placeholder="e.g. 100 Jumping Jacks" />
+        <input type="number" id="taskExp" placeholder="EXP (e.g. 25)" min="1" />
+        <button onclick="playSound('clickSound'); addCustomTask()">Add Quest</button>
+      </div>
+      <div class="user-quests">
+        <h3>Your Quests</h3>
+        <ul id="customTasksList"></ul>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="skills-section">
+      <h2>Skill Tree</h2>
+      <p>Add your own skills or achievements:</p>
+      <div class="skill-input">
+        <input type="text" id="skillName" placeholder="e.g. Sprint Master" />
+        <input type="number" id="skillLevelReq" placeholder="Level Req (e.g. 2)" min="1" />
+        <button onclick="playSound('clickSound'); addCustomSkill()">Add Skill</button>
+      </div>
+      <ul id="skillsList"></ul>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <button id="resetBtn" onclick="playSound('clickSound'); resetApp()">Reset Progress</button>
+      <button class="theme-toggle" onclick="playSound('clickSound'); toggleTheme()">🌓</button>
+      <button class="blue-neon-btn" onclick="exportData()">📤 Export Data</button>
+      <button class="blue-neon-btn" onclick="importData()">📂 Load Backup</button>
+    </footer>
+  </div>
+
+  <!-- ACHIEVEMENT CARD -->
+<div id="achievementCard" class="achievement-card" style="display: none;">
+  <div class="card-content">
+    <h2>Congratulations!</h2>
+    <p><strong>You've achieved:</strong></p>
+    <div class="rank-badge-large">S-Rank</div>
+    <p>Level <span id="cardLevel">100</span> | <span id="cardName">Unknown Warrior</span></p>
+    <button onclick="closeAchievementCard()">Close</button>
+    <button onclick="downloadAchievementCard()">Download</button>
+  </div>
+</div>
+<!-- Overlay -->
+<div id="cardOverlay" class="achievement-overlay" style="display: none;" onclick="closeAchievementCard()"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
