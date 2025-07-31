@@ -6,7 +6,7 @@ function getDefaultUser() {
     nextLevelExp: 100,
     abilityPoints: 0,
     stats: { str: 1, agi: 1, vit: 1, ene: 1 },
-    skills: [],
+    skills: [], 
     tasks: [],
     streak: {
       count: 0,
@@ -19,7 +19,7 @@ function getDefaultUser() {
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-xC76XTJ8NVb1YLGQpQDgF2OG3Uv8iHZwYqMzCbYYAn0KrcR-UrVbnH4&s"
     },
     achievements: {
-      sRankSeen: false  // ← Track if S-Rank popup was already shown
+      sRankSeen: false 
     }
   };
 }
@@ -64,6 +64,7 @@ function loadUserData() {
   renderCustomTasks();
   updateStreak(); // Check streak on load
   loadTheme();
+  initDefaultSkills();
 }
 
 function saveUserData() {
@@ -90,39 +91,121 @@ function updateUI() {
     if (btn) btn.disabled = user.abilityPoints <= 0;
   });
 
-  // Update skills
-  if (DOM.skillsList) {
-    // Inside updateUI(), change this part:
-    DOM.skillsList.innerHTML = '';
-    user.skills.forEach((s, i) => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        ${s.name} ${user.level >= s.levelRequired ? '' : `<small>(Req: Lv${s.levelRequired})</small>`}
-        <div>
-          <button class="delete-btn" onclick="removeSkillAt(${i})">❌</button>
+// Update skills
+if (DOM.skillsList) {
+  DOM.skillsList.innerHTML = '';
+
+  // Sort skills by levelRequired (low to high)
+  const sortedSkills = [...user.skills].sort((a, b) => a.levelRequired - b.levelRequired);
+
+  sortedSkills.forEach((s, i) => {
+    const li = document.createElement('li');
+    const unlocked = user.level >= s.levelRequired;
+    const canUpgrade = unlocked && user.abilityPoints > 0 && s.level < s.maxLevel;
+
+    // Color coding
+    let color = '#00f308ff;'; // Green - Early
+    if (s.levelRequired >= 10 && s.levelRequired <= 49) color = '#ff9a02ff;'; // Orange - Mid
+    if (s.levelRequired >= 50 && s.levelRequired <= 79) color = `#ff4d4d;
+    box-shadow: 0 4px 12px rgba(255, 77, 77, 1);`;
+    if (s.levelRequired >= 120 && s.levelRequired <= 150) color = 'linear-gradient(135deg, #fffde4, #fff6b3, #ffeb85, #ffd94a, #ffc100); box-shadow:0 0 15px #ffcc00, 0 0 30px rgba(255, 204, 0, 0.5);  '; // Red - Late
+    if (s.levelRequired >= 80 && s.levelRequired <= 119) color = 
+    `linear-gradient(130deg, #00d4ff, #00aaff, #0088ff,  #007cf0);
+     box-shadow: 
+    0 0 15px rgba(0, 124, 240, 0.4),
+    0 0 30px rgba(0, 212, 255, 0.35),
+    0 0 45px rgba(0, 170, 255, 0.3),
+    0 0 60px rgba(0, 136, 255, 0.25);`;
+
+    li.innerHTML = `
+      <div class="skill-item">
+        <div class="skill-header">
+          <strong>${s.name}</strong>
+          <span class="level-badge ${s.level >= s.maxLevel ? 'maxed maxed-blue' : ''}" style="background:${color} color: var(--text); padding:4px 8px; border-radius:12px; font-size:0.8rem;">
+            Lv ${s.level}/${s.maxLevel}
+          </span>
         </div>
-      `;
-      if (user.level < s.levelRequired) li.style.opacity = '0.6';
-      DOM.skillsList.appendChild(li);
-    });
-  }
+        <small class="small-Animation" style="color:#aaa;">
+          ${unlocked ? '🔓 Unlocked' : `🔒 Unlocks at Lv ${s.levelRequired}`}
+          ${s.level >= s.maxLevel ? `<span class="max-badge" title="This skill is at maximum level">${getMaxLevelText(s)}</span>` : ''}
+          
+        </small>
+        </div>
+        <div class="skill-actions">
+          <button 
+            class="upgrade-btn" 
+            ${!canUpgrade ? 'disabled' : ''}
+            onclick="upgradeSkill(${user.skills.indexOf(s)})"
+            style="${s.level >= s.maxLevel ? 'display: none;' : ''}"
+          >
+            +1 lvl (1 AP)
+          </button>
+          <button class="delete-btn" onclick="removeSkillAt(${i})">X</button>
+        
+      </div>
+    `;
+    DOM.skillsList.appendChild(li);
+  });
+}
+
 
 // Update profile
 if (DOM.profile.name) {
   DOM.profile.name.textContent = user.profile.name;
-  DOM.profile.title.textContent = user.profile.title; // ✅ This was missing!
+  DOM.profile.title.textContent = user.profile.title;
   DOM.profile.class.textContent = user.profile.class;
   DOM.profile.image.src = user.profile.image;
+
+// After updating profile info
+const profileCard = document.querySelector('.profile-card') || 
+                     document.querySelector('#profileDisplay').parentElement;
+
+if (profileCard) {
+  // Remove old tier classes
+  profileCard.classList.remove('srank', 'national');
+
+  if (user.level >= 150) {
+    profileCard.classList.add('national');
+  } else if (user.level >= 100) {
+    profileCard.classList.add('srank');
+  }
+}
+
+// After setting profile info
+const avatarContainer = DOM.profile.image.parentElement; // .profile-avatar
+  let badge = avatarContainer.querySelector('.rank-tier-badge');
+
+  if (user.level >= 150) {
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.className = 'rank-tier-badge mythic';
+      avatarContainer.appendChild(badge);
+    }
+    badge.textContent = 'MYTHIC';
+  } else if (user.level >= 100) {
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.className = 'rank-tier-badge legend';
+      avatarContainer.appendChild(badge);
+    }
+    badge.textContent = 'LEGEND';
+  } else {
+    // Remove badge if below 100
+    if (badge) badge.remove();
+  }
 }
   // Auto-title based on level
-if (user.level >= 100) {
-  user.profile.title = "Doom Bringer";
+if (user.level >= 150){
+  user.profile.title = "DEATH"
+}
+else if (user.level >= 100) {
+  user.profile.title = "DOOM BRINGER";
 } else if (user.level >= 80) {
-  user.profile.title = "Calmity";
+  user.profile.title = "CALMITY";
 } else if (user.level >= 50) {
-  user.profile.title = "Destroyer";
+  user.profile.title = "DESTROYER";
 } else if (user.level >= 30) {
-  user.profile.title = "Nova"
+  user.profile.title = "NOVA"
 } else {
   user.profile.title = "Rookie";
 }
@@ -134,7 +217,13 @@ DOM.profile.title.textContent = user.profile.title;
   updateLevelCircle();
   updateStreakUI();
 }
-
+//==================get skil==================
+function getMaxLevelText(skill) {
+  if (skill.levelRequired >= 120) return "MONSTER";
+  if (skill.levelRequired >= 80) return "LENGEND";
+  if (skill.levelRequired >= 50) return "ELITE";
+  return "MAX";
+}
 // ================ DAILY STREAK SYSTEM ================
 function getTodayKey() {
   return new Date().toISOString().split('T')[0]; // "2025-04-05"
@@ -181,7 +270,6 @@ function updateStreakUI() {
   const progress = $('streakProgress');
   if (el) el.textContent = user.streak?.count || 0;
 
-  // Update progress dots
   if (progress) {
     const days = progress.querySelectorAll('.day');
     const count = user.streak?.count || 0;
@@ -197,11 +285,13 @@ function updateRankBadge() {
   if (!badge) return;
 
   const wasRank = badge.textContent;
+  let rank = 'E-Rank';
+  let cls = 'erank';
 
-  let rank = 'F-Rank';
-  let cls = '';
-
-  if (user.level >= 100) {
+  if (user.level >= 150) {
+    rank = 'National Rank';
+    cls = 'nationalrank';
+  } else if (user.level >= 100) {
     rank = 'S-Rank';
     cls = 'srank';
   } else if (user.level >= 80) {
@@ -221,18 +311,23 @@ function updateRankBadge() {
   badge.textContent = rank;
   badge.className = `rank-badge ${cls}`;
 
-  // 🔔 Only show effects if rank changed
   if (wasRank && wasRank !== rank) {
     badge.classList.add('rank-up');
     setTimeout(() => badge.classList.remove('rank-up'), 1000);
-
     showMessage(`🏆 NEW RANK: ${rank}!`, 3000);
     playSound('levelUpSound');
 
-    // 🌟 Show S-Rank full-screen overlay only ONCE
+    // Trigger special events
+    if (rank === 'National Rank' && !user.achievements.nationalRankSeen) {
+      user.achievements.nationalRankSeen = true;
+      saveUserData();
+      showRankUpOverlay('NATIONAL RANK');
+      showAchievementCard('National Rank', user.level, user.profile.name);
+    }
+
     if (rank === 'S-Rank' && !user.achievements.sRankSeen) {
-      user.achievements.sRankSeen = true;  // Mark as seen
-      saveUserData();  // Persist it
+      user.achievements.sRankSeen = true;
+      saveUserData();
       showRankUpOverlay('S-RANK');
       showAchievementCard('S-Rank', user.level, user.profile.name);
     }
@@ -268,7 +363,6 @@ function showRankUpOverlay(rank) {
   document.body.appendChild(overlay);
   setTimeout(() => overlay.style.opacity = 1, 10);
 
-  // Remove after 3 seconds
   setTimeout(() => {
     overlay.style.opacity = 0;
     setTimeout(() => overlay.remove(), 500);
@@ -286,7 +380,6 @@ function updateLevelCircle() {
 function updateClassTheme() {
   const root = document.documentElement;
 
-  // Define your classes and their colors here
   const classThemes = {
     warrior: {
       color: '#6a0dad',
@@ -337,18 +430,15 @@ function updateClassTheme() {
       name: 'Berserker'
     },
     hamza: {
-     color: '#FF204E',
-      dark: '#0C0C0C',
-      light: '#FF204E',
+     color: '#00fffbbb',
+      dark: '#00a6ffff',
+      light: '#00fffbff',
       name: 'Monarch' 
     }
-    // Add more classes here!
   };
 
-  // Get user class and normalize it
   const userClass = (user.profile.class || 'Warrior').trim().toLowerCase();
 
-  // Find matching theme by key or partial name
   let theme = null;
   for (const [key, data] of Object.entries(classThemes)) {
     if (userClass.includes(key) || userClass === data.name.toLowerCase()) {
@@ -357,7 +447,6 @@ function updateClassTheme() {
     }
   }
 
-  // Fallback if no match
   if (!theme) {
     theme = {
       color: '#6a0dad',
@@ -366,7 +455,6 @@ function updateClassTheme() {
     };
   }
 
-  // Apply CSS variables
   root.style.setProperty('--class-color', theme.color);
   root.style.setProperty('--class-color-dark', theme.dark);
   root.style.setProperty('--class-color-light', theme.light);
@@ -395,10 +483,25 @@ function playSound(soundId) {
 }
 
 // ================ QUEST & LEVEL ================
-function completeQuest(name, expGain) {
+function completeQuest(name, expGain, skillBonus = null) {
   showMessage(`✅ ${name}! +${expGain} EXP`, 2000);
   playSound('questSound');
   user.exp += expGain;
+
+  if (skillBonus) {
+    const skill = user.skills.find(s => s.name === skillBonus.name);
+    if (skill && user.level >= skill.levelRequired) {
+      skill.exp += skillBonus.exp || 10;
+      // Level up skill if enough exp
+      while (skill.exp >= skill.expToNext && skill.level < skill.maxLevel) {
+        skill.exp -= skill.expToNext;
+        skill.level++;
+        skill.expToNext = 50 + (skill.level * 25);
+        showMessage(`🔥 ${skill.name} reached Level ${skill.level}!`, 3000);
+      }
+    }
+  }
+
   let levels = 0;
 
   // Faster leveling: EXP = 50 + (level * 10)
@@ -414,7 +517,6 @@ function completeQuest(name, expGain) {
     showMessage(`🎉 LEVEL UP! Level ${user.level}!`, 3000);
     playSound('levelUpSound');
 
-    // Animations
     const circle = $('levelCircle');
     if (circle) {
       circle.classList.remove('pop');
@@ -428,7 +530,6 @@ function completeQuest(name, expGain) {
     DOM.expBar.classList.add('exp-gain');
     setTimeout(() => DOM.expBar.classList.remove('exp-gain'), 600);
 
-    // ✅ Check for rank-up
     updateRankBadge();
   }
   updateUI();
@@ -484,15 +585,27 @@ function removeCustomTask(i) {
 function addCustomSkill() {
   const name = $('skillName').value.trim();
   const req = parseInt($('skillLevelReq').value) || 1;
+  const maxLevel = parseInt($('skillMaxLevel').value) || 5;
+
   if (!name) return showMessage('⚠️ Enter skill name!', 2000);
-  user.skills.push({ name, levelRequired: req });
+  if (isNaN(req) || req < 1) return showMessage('⚠️ Invalid level requirement!', 2000);
+  if (isNaN(maxLevel) || maxLevel < 1 || maxLevel > 10) return showMessage('⚠️ Max level must be 1–10!', 2000);
+
+  user.skills.push({
+    name,
+    levelRequired: req,
+    level: 1,
+    maxLevel
+  });
+
   $('skillName').value = '';
   $('skillLevelReq').value = '';
-  showMessage(`✨ Added: ${name}`, 2000);
+  $('skillMaxLevel').value = ''; // reset if exists
+
+  showMessage(`✨ Added: ${name} (Req: Lv${req})`, 2000);
   updateUI();
   saveUserData();
 }
-
 function removeSkillAt(i) {
   const name = user.skills[i].name;
   user.skills.splice(i, 1);
@@ -501,7 +614,7 @@ function removeSkillAt(i) {
   saveUserData();
 }
 
-// ================ ABILITY POINTS ================
+//================ ABILITY POINTS ================
 function allocateAP(stat) {
   if (user.abilityPoints <= 0) return showMessage('❌ No AP left!', 2000);
   user.stats[stat]++;
@@ -610,19 +723,16 @@ function downloadAchievementCard() {
   const card = $('achievementCard');
   const content = card.querySelector('.card-content');
 
-  // Try Web Share API first (mobile)
   if (navigator.share && window.innerWidth < 1000) {
     navigator.share({
       title: `I reached S-Rank in SoloFitness!`,
       text: `🏆 S-Rank Achieved! Level ${user.level} | ${user.profile.name}`
     }).catch(() => {
-      // If share fails or not supported, fall back to download
       fallbackToDownload(content);
     });
     return;
   }
 
-  // Otherwise, fall back to download
   fallbackToDownload(content);
 }
 
@@ -744,12 +854,10 @@ function exportData() {
 
 // ================ IMPORT DATA (LOAD BACKUP) ================
 function importData() {
-  // Create a file input element
   const input = document.createElement('input');
   input.type = 'file';
-  input.accept = '.json'; // Only allow JSON files
+  input.accept = '.json'; 
 
-  // When file is selected
   input.onchange = function(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -759,15 +867,12 @@ function importData() {
       try {
         const imported = JSON.parse(event.target.result);
 
-        // Optional: Validate structure
         if (!imported.level || !imported.exp) {
           throw new Error('Invalid data format');
         }
 
-        // Merge with default user in case some fields are missing
         user = { ...getDefaultUser(), ...imported };
 
-        // Save to localStorage
         saveUserData();
         updateUI();
         showMessage('✅ Data imported successfully!', 3000);
@@ -779,8 +884,36 @@ function importData() {
     reader.readAsText(file);
   };
 
-  // Trigger file picker
   input.click();
+}
+//===================Custom Skills==================
+function upgradeSkill(index) {
+  const skill = user.skills[index];
+  if (!skill) return;
+
+  if (user.level < skill.levelRequired) {
+    showMessage("🔒 Not unlocked yet!", 2000);
+    return;
+  }
+
+  if (skill.level >= skill.maxLevel) {
+    showMessage(`🔒 ${skill.name} is max level!`, 2000);
+    return;
+  }
+
+  if (user.abilityPoints <= 0) {
+    showMessage("❌ Not enough AP!", 2000);
+    return;
+  }
+
+  user.abilityPoints--;
+  skill.level++;
+
+  showMessage(`✨ ${skill.name} → Lv. ${skill.level}!`, 3000);
+  playSound('levelUpSound');
+
+  updateUI();
+  saveUserData();
 }
 
 // ================ INIT ================

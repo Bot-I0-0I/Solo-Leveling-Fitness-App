@@ -13,6 +13,7 @@
   --class-color-dark: #5a0c9d;
   --class-color-light: #8a2dbd;
   --class-color-rgb: 106, 13, 173; /* For shadows */
+  --class-gradient: linear-gradient(135deg, rgba(var(--class-color-rgb), 0.1), transparent);
 }
 
 /* Dark Mode */
@@ -44,7 +45,7 @@ body::-webkit-scrollbar{
   display: none;
 }
 .container {
-  max-width: 900px;
+  max-width: 90%;
   margin: 1.5rem auto;
   padding: 1rem;
 }
@@ -88,7 +89,6 @@ header h1::before {
 
 /* === Profile Card (RPG-Style) === */
 .profile-card {
-  background: var(--card-bg);
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 
@@ -100,8 +100,9 @@ header h1::before {
   text-align: center;
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 1s, box-shadow 1s;
 }
+
 
 .profile-card::before {
   content: '';
@@ -126,6 +127,7 @@ header h1::before {
   position: relative;
   display: inline-block;
   margin-bottom: 1rem;
+
 }
 
 #profileImage {
@@ -192,9 +194,58 @@ header h1::before {
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   transition: transform 0.3s ease;
   display: inline-block;
-  color: white;
+  color: var(--text);
+}
+/* === NATIONAL RANK - DARK NEON ON-PAGE STYLE === */
+.rank-badge.nationalrank {
+  background: #1a1a3a;
+  color: #00f0ff;
+  border: 2px solid #00f0ff;
+  text-shadow: 0 0 5px #00f0ff, 0 0 10px rgba(0, 240, 255, 0.7);
+  box-shadow: 
+    0 0 8px rgba(0, 240, 255, 0.5),
+    0 0 15px rgba(0, 240, 255, 0.8),
+    inset 0 0 4px rgba(0, 240, 255, 0.6);
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  animation: pulseNeon 2s infinite alternate;
+  position: relative;
+  overflow: hidden;
+  padding: 8px 16px;
+  border-radius: 24px;
 }
 
+.rank-badge.nationalrank::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  background: linear-gradient(45deg, transparent, #00f0ff, transparent, #8a2be2, transparent);
+  border-radius: 26px;
+  z-index: -1;
+  opacity: 0.4;
+  animation: scanGlow 3s linear infinite;
+}
+
+@keyframes pulseNeon {
+  from {
+    box-shadow: 
+      0 0 8px rgba(0, 240, 255, 0.5),
+      0 0 15px rgba(0, 240, 255, 0.8),
+      inset 0 0 4px rgba(0, 240, 255, 0.6);
+  }
+  to {
+    box-shadow: 
+      0 0 12px rgba(0, 240, 255, 0.8),
+      0 0 25px rgba(0, 240, 255, 1),
+      inset 0 0 6px rgba(0, 240, 255, 0.8);
+  }
+}
+
+@keyframes scanGlow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
 .rank-badge.srank { background: #d4af37; border: 2px solid gold; text-shadow: 0 0 4px black; }
 .rank-badge.arank-plus { background: #9c27b0; }
 .rank-badge.arank { background: #673ab7; }
@@ -653,11 +704,12 @@ button:hover {
   gap: 0.5rem;
   word-wrap: break-word;
   overflow: hidden;
+  height: fit-content;
 }
 
 /* Improved hover effect – no translateX that causes overflow */
 .user-quests li:hover, #skillsList li:hover {
-  background: rgba(var(--class-color-rgb), 0.08);
+  background: rgba(var(--class-color), 0.08);
   border-left: 4px solid var(--class-color);
   padding-left: 0.6rem; /* Compensate for border */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -691,18 +743,16 @@ button:hover {
 .delete-btn {
   background: none;
   border: none;
-  font-size: 1.3rem;
+  color: #ff5555 !important;
+  font-size: 1.2rem;
   cursor: pointer;
-  opacity: 0.7;
-  transition: all 0.2s ease;
-  padding: 0;
-  width: auto;
+  opacity: 0.8;
 }
 
 .user-quests button:hover,
 .delete-btn:hover {
   opacity: 1;
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.1);
 }
 
 .user-quests button:first-child {
@@ -793,11 +843,6 @@ footer {
 
 .blue-neon-btn:hover::before {
   opacity: 1;
-}
-
-@keyframes scan-glow {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 /* Optional: Pulse animation for special moments */
@@ -909,11 +954,452 @@ footer {
   z-index: 10000;
   display: none;
 }
+/* ===== national rank ===== */
+/* === NATIONAL RANK - NEON DARK ANIMATED BACKGROUND === */
+.achievement-overlay.nationalrank {
+  background: #000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.achievement-overlay.nationalrank.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.achievement-overlay.nationalrank::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at center, rgba(0, 240, 255, 0.1), transparent 40%),
+    radial-gradient(circle at top left, rgba(139, 0, 255, 0.15), transparent 50%),
+    radial-gradient(circle at bottom right, rgba(0, 240, 255, 0.1), transparent 50%);
+  z-index: 0;
+}
+
+.achievement-overlay.nationalrank::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(45deg, 
+      transparent 0%,
+      rgba(0, 240, 255, 0.05) 25%,
+      transparent 50%,
+      rgba(139, 0, 255, 0.05) 75%,
+      transparent 100%);
+  z-index: 1;
+  animation: scanGrid 8s linear infinite;
+  opacity: 0.6;
+}
+
+/* Scanning Light Effect */
+.achievement-overlay.nationalrank .scan-bar {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(transparent, rgba(0, 240, 255, 0.4), transparent);
+  filter: blur(2px);
+  animation: scanLight 3s ease-in-out infinite;
+  z-index: 2;
+}
+
+/* Neon Glow Border */
+.achievement-overlay.nationalrank .neon-border {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  bottom: 10%;
+  border: 2px solid #00f0ff;
+  border-radius: 15px;
+  z-index: 2;
+  box-shadow: 
+    0 0 10px #00f0ff,
+    0 0 20px #00f0ff,
+    0 0 30px rgba(0, 240, 255, 0.5);
+  animation: pulseNeon 2s infinite alternate;
+}
+
+/* Stars / Particles (Optional) */
+.achievement-overlay.nationalrank .star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.8;
+  z-index: 2;
+  animation: floatStar 3s infinite ease-in-out;
+}
+
+@keyframes scanGrid {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes scanLight {
+  0%, 100% { top: -100px; }
+  50% { top: 100%; }
+}
+
+@keyframes pulseNeon {
+  from {
+    box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 30px rgba(0, 240, 255, 0.7);
+  }
+  to {
+    box-shadow: 0 0 20px #00f0ff, 0 0 30px #00f0ff, 0 0 40px rgba(0, 240, 255, 0.9);
+  }
+}
+
+@keyframes floatStar {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(180deg); }
+}
+.achievement-card.national-card {
+  background: linear-gradient(135deg, #0f0f23, #1a0033);
+  border: 1px solid #00f0ff;
+  box-shadow: 
+    0 0 10px rgba(0, 240, 255, 0.5),
+    0 0 20px rgba(0, 240, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.achievement-card.national-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: 
+    linear-gradient(60deg, transparent 60%, rgba(139, 0, 255, 0.1) 80%, transparent 100%),
+    linear-gradient(-60deg, transparent 60%, rgba(0, 240, 255, 0.1) 80%, transparent 100%);
+  z-index: 0;
+  animation: scanLines 10s linear infinite;
+}
+
+.achievement-card.national-card::after {
+  content: '';
+  position: absolute;
+  top: -10px; left: -10px; right: -10px; bottom: -10px;
+  border: 2px solid #00f0ff;
+  border-radius: 16px;
+  z-index: -1;
+  box-shadow: 0 0 15px #00f0ff;
+}
+
+.achievement-card.national-card h2,
+.achievement-card.national-card p,
+.achievement-card.national-card .rank-badge-large {
+  z-index: 1;
+  position: relative;
+  text-shadow: 0 0 5px #00f0ff;
+}
+
+@keyframes scanLines {
+  0% { background-position: 0 0; }
+  100% { background-position: 100px 100px; }
+}
+/* === Improved Skill List Styling === */
+.skill-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--text);
+  width: 40rem;
+}
+
+.skill-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.skill-header strong {
+  color: var(--class-color);
+}
+
+.level-badge{
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  color: var(--card-bg);
+  margin-left: 10px;
+  position: relative;
+  display: inline-block;
+  animation: pulseGlow 2s infinite ease-in-out;
+  overflow: hidden;
+}
+.level-badge.maxed::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transform: skewX(-25deg);
+  animation: shineSwipe 2s infinite;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 12px;
+  opacity: 0.7;
+  overflow: hidden;
+}
+
+@keyframes shineSwipe {
+  0% {
+    left: -100%;
+  }
+  20% {
+    left: 0%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.upgrade-btn {
+  display: inline-block;
+  padding: 20px 18px;
+  background: var(--class-color) !important;
+  color: var(--text);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 8px;
+  margin-right: 8px;
+}
+
+.upgrade-btn:hover:not([disabled]) {
+  background: var(--class-color-dark) !important;
+}
+
+.upgrade-btn:disabled {
+  background: #555 !important;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #ff5555;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0.8;
+  margin-top: 8px;
+}
+
+.delete-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Responsive: Prevent layout break on small screens */
+@media (max-width: 480px) {
+  .skill-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .skill-header span {
+    align-self: flex-end;
+  }
+  .skill-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+}
+
+.max-badge {
+  background: linear-gradient(135deg, #ff4d4d, #ff0000);
+  color: white;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 0.75rem;
+  text-shadow: 0 0 5px rgba(0,0,0,0.5);
+  animation: pulseMax 1.5s infinite alternate;
+}
+
+@keyframes pulseMax {
+  from {
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+  }
+  to {
+    transform: scale(1.08);
+    box-shadow: 0 0 14px rgba(255, 0, 0, 0.8);
+  }
+}
 
 /* === Animations === */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================== LEVEL 100: S-Rank Style ================== */
+.profile-card.national {
+  background: linear-gradient(145deg, #0d1b2a, #1b263b);
+  border: 2px solid #007cf0;
+  box-shadow: 
+    0 0 15px rgba(0, 124, 240, 0.5),
+    0 0 30px rgba(0, 170, 255, 0.3),
+    0 0 45px rgba(0, 136, 255, 0.2);
+  color: white;
+  text-shadow: 0 0 5px rgba(0, 200, 255, 0.4);
+}
+
+.profile-card.national::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, transparent, #007cf0, transparent, #00d4ff);
+  z-index: -1;
+  animation: borderGlow 3s infinite alternate;
+}
+
+.profile-card.national h2,
+.profile-card.national {
+  color: #00e5ff;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+}
+
+@keyframes borderGlow {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; filter: brightness(1.1); }
+}
+
+/* ================== LEVEL 150: National Rank Style ================== */
+ .profile-card.srank {
+  background: linear-gradient(160deg, #1a0033, #2d004d, #1a0033);
+  border: 2px solid #d4af37;
+  box-shadow: 
+    0 0 20px rgba(212, 175, 55, 0.6),
+    0 0 40px rgba(212, 175, 55, 0.4),
+    0 0 60px rgba(255, 215, 0, 0.3);
+  color: #fff;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.7);
+}
+
+ 
+.profile-card.srank h2,
+.profile-card.srank {
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+  animation: goldPulse 2s infinite alternate;
+}
+
+@keyframes goldPulse {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.2); }
+} 
+
+.profile-card.srank #levelCircle,
+.profile-card.national #levelCircle:hover {
+  animation: pulseLevel 1.5s infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes pulseLevel {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--class-color-rgb), 0.7); }
+  50% { transform: scale(1.1); box-shadow: 0 0 0 12px rgba(var(--class-color-rgb), 0.4); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--class-color-rgb), 0); }
+}
+
+
+/* Rank Tier Badge Below Profile Image */
+.profile-avatar .rank-tier-badge {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  padding: 5px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  text-align: center;
+  width: max-content;
+  font-family: 'Arial', sans-serif;
+  z-index: 2;
+  animation: pulseBadge 2s infinite alternate;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Legend - Gold Theme */
+.profile-avatar .rank-tier-badge.legend {
+  background: #d4af37;
+  color: #333;
+  border: 1px solid #fff;
+  text-shadow: 0 0 3px rgba(255, 215, 0, 0.5);
+}
+
+/* Mythic - National Rank Neon Purple/Blue */
+.profile-avatar .rank-tier-badge.mythic {
+  background: #1a1a3a;
+  color: #00f0ff;
+  border: 1px solid #00f0ff;
+  text-shadow: 0 0 5px #00f0ff;
+  box-shadow: 
+    0 0 8px rgba(0, 240, 255, 0.5),
+    0 0 15px rgba(0, 240, 255, 0.8);
+  animation: pulseNeon 2s infinite alternate;
+}
+
+@keyframes pulseBadge {
+  from {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  to {
+    transform: scale(1.08);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes pulseNeon {
+  from {
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.5), 0 0 15px rgba(0, 240, 255, 0.8);
+  }
+  to {
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.8), 0 0 25px rgba(0, 240, 255, 1);
+  }
+}
+
+@keyframes pulseBadge {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); filter: brightness(1.2); }
 }
 
 /* === Responsive === */

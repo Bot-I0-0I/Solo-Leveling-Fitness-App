@@ -18,24 +18,18 @@
   <div id="profileDisplay">
     <div class="profile-avatar">
       <img id="profileImage" src="" alt="Profile" />
-      <div class="level-circle" id="levelCircle">Lv<span id="levelTop">1</span></div>
+      <div class="level-circle" id="levelCircle">Lvl<span id="levelTop">1</span></div>
     </div>
     <p><strong>Name:</strong> <span id="profileName">Unknown Warrior</span></p>
-    
-    <!-- ✅ ADD THIS LINE FOR TITLE -->
     <p><strong>Title:</strong> <span id="profileTitle">The Beginner</span></p>
-    
-    <div class="rank-badge" id="rankBadge">B-Rank</div>
+    <div class="rank-badge" id="rankBadge">E-Rank</div>
     <p><strong>Class:</strong> <span id="profileClass">Warrior</span></p>
     <button onclick="playSound('clickSound'); toggleProfileEdit()">✏️ Edit</button>
   </div>
 
   <div id="profileEdit" style="display: none;">
     <input type="text" id="editName" placeholder="Your Name" />
-    
-    <!-- ✅ Make sure this input exists (it does!) -->
     <input type="text" id="editTitle" placeholder="Title (e.g. Gym Monarch)" />
-    
     <input type="text" id="editClass" placeholder="Class (e.g. Warrior, Mage)" />
     <input type="url" id="editImage" placeholder="Image URL" />
     <button onclick="playSound('clickSound'); saveProfile()">💾 Save</button>
@@ -138,6 +132,7 @@
       <div class="skill-input">
         <input type="text" id="skillName" placeholder="e.g. Sprint Master" />
         <input type="number" id="skillLevelReq" placeholder="Level Req (e.g. 2)" min="1" />
+        <input type="number" id="skillMaxLevel" placeholder="Max Level (1-10)" min="1" max="10" value="5">
         <button onclick="playSound('clickSound'); addCustomSkill()">Add Skill</button>
       </div>
       <ul id="skillsList"></ul>
