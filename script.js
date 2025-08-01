@@ -126,8 +126,9 @@ if (DOM.skillsList) {
           </span>
         </div>
         <small class="small-Animation" style="color:#aaa;">
-          ${unlocked ? '🔓 Unlocked' : `🔒 Unlocks at Lv ${s.levelRequired}`}
-          ${s.level >= s.maxLevel ? `<span class="max-badge" title="This skill is at maximum level">${getMaxLevelText(s)}</span>` : ''}
+               ${unlocked ? `🔓 Unlocked ${s.level >= s.maxLevel ? `
+        <span class="max-badge" title="This skill is at maximum level">${getMaxLevelText(s)}</span>` : ''}`
+         : `🔒 Unlocks at Lv ${s.levelRequired}`}
           
         </small>
         </div>
