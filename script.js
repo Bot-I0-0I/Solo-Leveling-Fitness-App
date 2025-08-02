@@ -141,7 +141,7 @@ if (DOM.skillsList) {
           >
             +1 lvl (1 AP)
           </button>
-          <button class="delete-btn" onclick="removeSkillAt(${i})">X</button>
+          <button class="delete-btn" onclick="removeSkillAt(${user.skills.indexOf(s)})">X</button>
         
       </div>
     `;
@@ -430,10 +430,10 @@ function updateClassTheme() {
       light: '#ff7675',
       name: 'Berserker'
     },
-    hamza: {
-     color: '#00fffbbb',
-      dark: '#00a6ffff',
-      light: '#00fffbff',
+   hamza: {
+     color: '#00fffbff',
+      dark: '#0000ffff',
+      light: '#0000ffff',
       name: 'Monarch' 
     }
   };
@@ -919,3 +919,4 @@ function upgradeSkill(index) {
 
 // ================ INIT ================
 loadUserData();
+
