@@ -104,7 +104,7 @@ body::-webkit-scrollbar{
 }
 @media (max-width: 850px) {
   .container {
-   width: 100% !important;
+   width: 95% !important;
     grid-template-areas: 
       'profile'
       'shadowfitness'
@@ -1767,4 +1767,5 @@ footer {
   #profileImage { width: 80px; height: 80px; }
   .task-input input { min-width: 100%; }
   section { padding: 1.2rem; }
+
 }
