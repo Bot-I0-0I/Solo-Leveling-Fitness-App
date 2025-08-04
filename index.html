@@ -5,12 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shadow Fitness - Become the S-Rank</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Sound Effects -->
   <audio id="levelUpSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio>
   <audio id="questSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto"></audio>
   <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-14.mp3" preload="auto"></audio>
 </head>
 <body>
+<header>
+  <div class="logo" style="font-variant: small-caps; margin-left: 10px;">Customs X</div>
+  <nav>
+    <ul>
+      <li><a href="#profileDisplay">Profile</a></li>
+      <li><a href="#exp">Stats</a></li>
+      <li><a href="#quests">Quests</a></li>
+      <li><a href="#skillsList">Skills</a></li>
+    </ul>
+  </nav>
+</header>
   <div class="container">
     <!-- Profile Card -->
 <section class="profile-card">
@@ -37,9 +49,13 @@
   </div>
 </section>
 
-    <header>
-      <h1 data-glow="⚔️ Shadow Fitness">⚔️ Shadow Fitness</h1>
-      <p class="subtitle">The weakest become the strongest.</p>
+    <header id="shadowfitness">
+      <h1 data-glow="">⚔️ Shadow Fitness</h1>
+      <div class="shadow-fitness"></div>
+      <p class="subtitle">The weakest become the strongest.<br>
+         <span class="footer-logo">Made by Muhammad Hamza</span> <br>
+      <a href="#" style="text-decoration: none;" class="primary-btn">Powered By Customs X</a> </p>
+      </p>
     </header>
 
     <!-- Streak Dashboard -->
@@ -102,7 +118,7 @@
     </section>
 
     <!-- Quests -->
-    <section class="quests">
+    <section class="quests" id="quests">
       <h2>Daily Quests</h2>
       <button onclick="playSound('questSound'); completeQuest('Push-Ups', 20)">20 Push-Ups (+20 EXP)</button>
       <button onclick="playSound('questSound'); completeQuest('Squats', 30)">30 Squats (+30 EXP)</button>
@@ -140,10 +156,22 @@
 
     <!-- Footer -->
     <footer>
-      <button id="resetBtn" onclick="playSound('clickSound'); resetApp()">Reset Progress</button>
       <button class="theme-toggle" onclick="playSound('clickSound'); toggleTheme()">🌓</button>
       <button class="blue-neon-btn" onclick="exportData()">📤 Export Data</button>
       <button class="blue-neon-btn" onclick="importData()">📂 Load Backup</button>
+    </footer>
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo" style="font-variant: small-caps;">Shadow Fitness</div>
+        <p class="footer-text">© 2025 CusomsX inc. All rights reserved.</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-discord"></i></a>
+          <a href="#https://www.instagram.com/muhammad_hamza_ajmal/"><i class="fab fa-instagram"></i></a>
+          <a href=""><i class="fab fa-twitter" title="Not Available"></i></a>
+          <a href="https://github.com/Bot-I0-0I" target="_blank"><i class="fab fa-github"></i></a>
+        </div>
+        <button onclick="resetApp()" class="primary-btn">Reset Progress</button>
+      </div>
     </footer>
   </div>
 

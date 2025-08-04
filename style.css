@@ -1,6 +1,4 @@
-/* ====== SHADOW FITNESS - ADVANCED STYLE ====== */
 
-/* === CSS Variables & Theme System === */
 :root {
   --bg: #f5f7fa;
   --card-bg: #ffffff;
@@ -14,7 +12,19 @@
   --class-color-light: #8a2dbd;
   --class-color-rgb: 106, 13, 173; /* For shadows */
   --class-gradient: linear-gradient(135deg, rgba(var(--class-color-rgb), 0.1), transparent);
+  --color-bg-primary: 15, 12, 41;    /* #0f0c29 */
+  --color-bg-secondary: 48, 43, 99;   /* #302b63 */
+  --color-bg-tertiary: 36, 36, 62;    /* #24243e */
+  --color-text-primary: 255, 255, 255;
+  --color-text-secondary: 224, 224, 224;
+  --color-accent-primary: 255, 138, 0; /* #ff8a00 */
+  --color-accent-secondary: 229, 46, 113; /* #e52e71 */
+  --color-gradient-1: 0, 219, 222;    /* #00dbde */
+  --color-gradient-2: 252, 0, 255;    /* #fc00ff */
+  --color-card-bg: 255, 255, 255, 0.05;
+  --color-card-border: 255, 255, 255, 0.1;
 }
+
 
 /* Dark Mode */
 [data-theme="dark"] {
@@ -23,6 +33,8 @@
   --text: #e0e0e0;
   --border: #333;
   --shadow: rgba(0, 0, 0, 0.3);
+  --color-gradient-1: 0, 219, 222;    /* #00dbde */
+  --color-gradient-2: 252, 0, 255;    /* #fc00ff */
 }
 
 /* === Global Styles === */
@@ -32,6 +44,9 @@
   box-sizing: border-box;
 }
 
+html{
+  scroll-behavior: smooth;
+}
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: var(--bg);
@@ -45,18 +60,201 @@ body::-webkit-scrollbar{
   display: none;
 }
 .container {
-  max-width: 90%;
+  max-width: 95%;
   margin: 1.5rem auto;
   padding: 1rem;
+  display: grid;
+  grid-template-columns: 60% 40%;
+  grid-template-rows: 33rem 15rem min-content max-content min-content;
+  grid-template-areas: 
+    'profile shadowfitness'
+    'streak dashboard'
+    'ability tasks'
+    'skills quests'
+    'footer footer';
+}
+.profile-card {
+  grid-area: profile;
+  margin-right: 20px;
+}
+.skills-section {
+  grid-area: skills;
+  margin-right: 20px;
+}
+.custom-tasks {
+  grid-area: quests;
+  margin-left: 20px;
+}
+.abilities {
+  grid-area: ability;
+  margin-right: 20px;
+}
+.quests {
+  grid-area: tasks;
+  margin-left: 20px;
+}
+.status-panel {
+  grid-area: dashboard;
+  margin-left: 20px;
+}
+.streak-dashboard {
+  grid-area: streak;
+  margin-right: 0px;
+  width: 97% !important;
+}
+@media (max-width: 850px) {
+  .container {
+   width: 100% !important;
+    grid-template-areas: 
+      'profile'
+      'shadowfitness'
+      'streak'
+      'dashboard'
+      'ability'
+      'tasks'
+      'skills'
+      'quests'
+      'footer';
+    grid-template-columns: 1fr;
+  }
+  .profile-card {
+  grid-area: profile;
+  margin-right: 0px;
+  }
+  .skills-section {
+  grid-area: skills;
+  margin-right: 0px;
+}
+.custom-tasks {
+  grid-area: quests;
+  margin-left: 0px;
+}
+.abilities {
+  grid-area: ability;
+  margin-right: 0px;
+}
+.quests {
+  grid-area: tasks;
+  margin-left: 0px;
+}
+.status-panel {
+  grid-area: dashboard;
+  margin-left: 0px;
+}
+.streak-dashboard {
+  grid-area: streak;
+  margin-right: 0px;
+  width: 100% !important;
+}
+.blue-neon-btn {
+  margin-left: 98px !important;
+}
+#shadowfitness {
+  margin-left: 0px !important;
+}
 }
 
+ #shadowfitness {
+  grid-area: shadowfitness;
+  margin-left: 20px;
+  margin-right: 20px;
+  text-align: center;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 93%;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+  overflow: hidden;
+} 
 /* === Header === */
 header {
-  text-align: center;
-  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px 0;
   position: relative;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(var(--color-card-border));
+  text-align: center !important;
+  margin-bottom: 2rem !important;
+  flex-wrap: wrap;
 }
 
+.logo {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, 
+    rgb(var(--color-gradient-1)), 
+    rgb(var(--color-gradient-2)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transform: translateZ(50px);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.logo:hover {
+  transform: translateZ(70px) scale(1.05);
+  cursor: pointer;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav ul li a {
+  color: var(--color-bg-primary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  padding: 8px 15px;
+  border-radius: 30px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);;
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+nav ul li a:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+      transparent, 
+      var(--card-bg), 
+      transparent);
+  transition: 0.5s;
+}
+
+nav ul li a:hover:before {
+  left: 100%;
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+  background: rgba(var(--color-text-primary), 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(var(--shadow-color), var(--shadow-opacity-medium));
+}
 header h1 {
   font-size: 2.8rem;
   font-weight: 700;
@@ -87,7 +285,7 @@ header h1::before {
   font-size: 1.1rem;
 }
 
-/* === Profile Card (RPG-Style) === */
+/* === Profile Card === */
 .profile-card {
   padding: 2rem;
   border-radius: 16px;
@@ -183,7 +381,6 @@ header h1::before {
 }
 
 /* Rank Badges */ 
-/* Rank Badge */
 .rank-badge {
   font-weight: bold;
   padding: 6px 12px;
@@ -194,9 +391,9 @@ header h1::before {
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   transition: transform 0.3s ease;
   display: inline-block;
-  color: var(--text);
+  color: white;
 }
-/* === NATIONAL RANK - DARK NEON ON-PAGE STYLE === */
+
 .rank-badge.nationalrank {
   background: #1a1a3a;
   color: #00f0ff;
@@ -267,7 +464,7 @@ header h1::before {
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* S-Rank Glow */
+
 .rank-badge.srank {
   animation: srankGlow 2s infinite alternate;
 }
@@ -434,7 +631,8 @@ header h1::before {
 }
 
 /* === Streak Dashboard === */
-.streak-dashboard {
+.streak-dashboard,
+.status-panel {
   background: var(--card-bg);
   padding: 1.5rem;
   border-radius: 12px;
@@ -442,9 +640,12 @@ header h1::before {
   border: 1px solid var(--border);
   margin-bottom: 1.5rem;
   transition: all 0.3s ease;
+  width: 100%;
+  display: inline-block;
 }
 
-.streak-dashboard:hover {
+.streak-dashboard:hover,
+.status-panel:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
 }
@@ -707,20 +908,17 @@ button:hover {
   height: fit-content;
 }
 
-/* Improved hover effect – no translateX that causes overflow */
 .user-quests li:hover, #skillsList li:hover {
   background: rgba(var(--class-color), 0.08);
   border-left: 4px solid var(--class-color);
-  padding-left: 0.6rem; /* Compensate for border */
+  padding-left: 0.6rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  /* Removed transform: translateX to avoid clipping issues */
 }
 
-/* Ensure text takes available space but wraps when needed */
 .user-quests li span, #skillsList li span {
   flex: 1;
   font-weight: 500;
-  min-width: 0; /* Allows text to wrap properly */
+  min-width: 0;
   word-break: break-word;
 }
 
@@ -736,7 +934,7 @@ button:hover {
 #skillsList li > div:last-child {
   display: flex;
   gap: 0.5rem;
-  flex-shrink: 0; /* Prevents buttons from being squeezed */
+  flex-shrink: 0;
 }
 
 .user-quests button,
@@ -766,10 +964,84 @@ button:hover {
 
 /* === Footer === */
 footer {
+  padding: 0px;
+  margin-top: 10px;
+}
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border);
+}
+
+.footer-logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, 
+    rgb(var(--color-gradient-1)), 
+    rgb(var(--color-gradient-2)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 15px;
+  transition: transform cubic-bezier(0.175, 0.885, 0.32, 1.275) .4s;
+}
+.footer-logo:hover {
+  cursor: pointer;
+  transform: rotate(-5deg);
+}
+
+.footer-text {
+  color: var(--text);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.social-icons a {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(var(--color-card-border));
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.social-icons a:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 12px 30px rgba(var(--shadow-color), calc(var(--shadow-opacity-medium) + 0.15));
+}
+
+.social-icons a:hover::before {
+    opacity: 1;
+}
+.social-icons a::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg,
+        rgba(var(--color-accent-primary), 0.2),
+        rgba(var(--color-accent-secondary), 0.2));
+    transform: rotate(30deg);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
 }
 
 #resetBtn {
@@ -786,8 +1058,7 @@ footer {
   transform: translateY(-2px);
 }
 
-/* Neon Dark Theme - Import/Export Buttons */
-/* Blue Neon Theme - Import/Export Buttons */
+/*Import/Export Buttons */
 .blue-neon-btn {
   background: transparent;
   color: #00f0ff;
@@ -845,7 +1116,7 @@ footer {
   opacity: 1;
 }
 
-/* Optional: Pulse animation for special moments */
+
 .blue-neon-btn.pulse {
   animation: pulse-blue 1.5s infinite alternate;
 }
@@ -955,7 +1226,6 @@ footer {
   display: none;
 }
 /* ===== national rank ===== */
-/* === NATIONAL RANK - NEON DARK ANIMATED BACKGROUND === */
 .achievement-overlay.nationalrank {
   background: #000;
   position: fixed;
@@ -1007,7 +1277,6 @@ footer {
   opacity: 0.6;
 }
 
-/* Scanning Light Effect */
 .achievement-overlay.nationalrank .scan-bar {
   position: absolute;
   top: -100px;
@@ -1125,6 +1394,7 @@ footer {
   line-height: 1.5;
   color: var(--text);
   width: 40rem;
+  position: relative;
 }
 
 .skill-header {
@@ -1185,6 +1455,8 @@ footer {
   }
 }
 
+
+
 .upgrade-btn {
   display: inline-block;
   padding: 20px 18px;
@@ -1224,7 +1496,6 @@ footer {
   transform: scale(1.1);
 }
 
-/* Responsive: Prevent layout break on small screens */
 @media (max-width: 480px) {
   .skill-header {
     flex-direction: column;
@@ -1310,7 +1581,7 @@ footer {
     0 0 20px rgba(212, 175, 55, 0.6),
     0 0 40px rgba(212, 175, 55, 0.4),
     0 0 60px rgba(255, 215, 0, 0.3);
-  color: #fff;
+  color: #fff !important;
   text-shadow: 0 0 8px rgba(212, 175, 55, 0.7);
 }
 
@@ -1341,14 +1612,15 @@ footer {
 
 
 /* Rank Tier Badge Below Profile Image */
-.profile-avatar .rank-tier-badge {
+ .rank-tier-badge {
+  display: inline-block;
   margin-top: 8px;
   font-size: 0.85rem;
   font-weight: bold;
   padding: 5px 12px;
   border-radius: 20px;
   text-transform: uppercase;
-  letter-spacing: 5px;
+  letter-spacing: 1px;
   text-align: center;
   width: max-content;
   font-family: 'Arial', sans-serif;
@@ -1357,24 +1629,31 @@ footer {
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
-/* Legend - Gold Theme */
-.profile-avatar .rank-tier-badge.legend {
+.rank-tier-badge.level-100 {
   background: #d4af37;
   color: #333;
   border: 1px solid #fff;
   text-shadow: 0 0 3px rgba(255, 215, 0, 0.5);
 }
 
-/* Mythic - National Rank Neon Purple/Blue */
-.profile-avatar .rank-tier-badge.mythic {
-  background: #1a1a3a;
+ .rank-tier-badge.level-150 {
+  background: #ffffff;
   color: #00f0ff;
   border: 1px solid #00f0ff;
   text-shadow: 0 0 5px #00f0ff;
   box-shadow: 
     0 0 8px rgba(0, 240, 255, 0.5),
     0 0 15px rgba(0, 240, 255, 0.8);
-  animation: pulseNeon 2s infinite alternate;
+}
+
+.rank-tier-badge.str-50 {
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid #ffc400;
+  text-shadow: 0 0 10px rgb(255, 238, 0) ;
+  box-shadow: 
+    0 0 8px rgb(255, 255, 0),
+    0 0 15px rgb(255, 247, 0);
 }
 
 @keyframes pulseBadge {
@@ -1400,6 +1679,84 @@ footer {
 @keyframes pulseBadge {
   from { transform: scale(1); }
   to { transform: scale(1.08); filter: brightness(1.2); }
+}
+
+.primary-btn {
+  background: linear-gradient(45deg, 
+    rgb(var(--color-accent-primary)), 
+    rgb(var(--color-accent-secondary)));
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  display: inline-block;
+}
+
+.primary-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, 
+    rgba(255, 255, 255, 0.3) 0%, 
+    transparent 70%);
+  transform: scale(0);
+  transition: transform 0.6s;
+  z-index: -1;
+}
+
+.primary-btn:active::before {
+  transform: scale(2);
+  opacity: 0;
+}
+
+.primary-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(var(--shadow-color), 0.2);
+}
+
+@media (max-width: 768px) {  
+  nav {
+      position: fixed;
+      top: 80px;
+      left: -100%;
+      width: 100%;
+      height: calc(100vh - 80px);
+      background: rgba(var(--color-bg-primary), 0.95);
+      backdrop-filter: blur(10px);
+      transition: left 0.3s ease;
+      z-index: 100;
+  }
+  
+  nav.active {
+      left: 0;
+  }
+  
+  nav ul {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      height: 100%;
+      padding: 40px 0;
+  }
+  
+  .close-menu {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.8rem;
+      color: rgb(var(--color-text-primary));
+      cursor: pointer;
+  }
 }
 
 /* === Responsive === */

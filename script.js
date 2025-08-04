@@ -1,31 +1,29 @@
 // ================ DEFAULT USER ================
-function getDefaultUser() {
-  return {
-    level: 1,
-    exp: 0,
-    nextLevelExp: 100,
-    abilityPoints: 0,
-    stats: { str: 1, agi: 1, vit: 1, ene: 1 },
-    skills: [], 
-    tasks: [],
-    streak: {
-      count: 0,
-      lastActive: null
-    },
-    profile: {
-      name: "Unknown Warrior",
-      title: "The Beginner",
-      class: "Warrior",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-xC76XTJ8NVb1YLGQpQDgF2OG3Uv8iHZwYqMzCbYYAn0KrcR-UrVbnH4&s"
-    },
-    achievements: {
-      sRankSeen: false 
-    }
-  };
-}
-
+ function getDefaultUser() {
+   return {
+     level: 1,
+     exp: 0,
+     nextLevelExp: 100,
+     abilityPoints: 0,
+     stats: { str: 1, agi: 1, vit: 1, ene: 1 },
+     skills: [], 
+     tasks: [],
+     streak: {
+       count: 0,
+       lastActive: null
+     },
+     profile: {
+       name: "UnKnown",
+       title: "The Beginner",
+       class: "Rogue",
+       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-xC76XTJ8NVb1YLGQpQDgF2OG3Uv8iHZwYqMzCbYYAn0KrcR-UrVbnH4&s"
+     },
+     achievements: {
+       sRankSeen: false 
+     }
+   };
+ }
 let user = getDefaultUser();
-
 // ================ DOM ELEMENTS ================
 const $ = id => document.getElementById(id);
 
@@ -62,9 +60,8 @@ function loadUserData() {
   }
   updateUI();
   renderCustomTasks();
-  updateStreak(); // Check streak on load
+  updateStreak();
   loadTheme();
-  initDefaultSkills();
 }
 
 function saveUserData() {
@@ -91,11 +88,10 @@ function updateUI() {
     if (btn) btn.disabled = user.abilityPoints <= 0;
   });
 
-// Update skills
+
 if (DOM.skillsList) {
   DOM.skillsList.innerHTML = '';
 
-  // Sort skills by levelRequired (low to high)
   const sortedSkills = [...user.skills].sort((a, b) => a.levelRequired - b.levelRequired);
 
   sortedSkills.forEach((s, i) => {
@@ -103,12 +99,10 @@ if (DOM.skillsList) {
     const unlocked = user.level >= s.levelRequired;
     const canUpgrade = unlocked && user.abilityPoints > 0 && s.level < s.maxLevel;
 
-    // Color coding
-    let color = '#00f308ff;'; // Green - Early
-    if (s.levelRequired >= 10 && s.levelRequired <= 49) color = '#ff9a02ff;'; // Orange - Mid
-    if (s.levelRequired >= 50 && s.levelRequired <= 79) color = `#ff4d4d;
-    box-shadow: 0 4px 12px rgba(255, 77, 77, 1);`;
-    if (s.levelRequired >= 120 && s.levelRequired <= 150) color = 'linear-gradient(135deg, #fffde4, #fff6b3, #ffeb85, #ffd94a, #ffc100); box-shadow:0 0 15px #ffcc00, 0 0 30px rgba(255, 204, 0, 0.5);  '; // Red - Late
+    let ColorRainbow = ''
+    let color = '#00f308ff;'; 
+    if (s.levelRequired >= 10 && s.levelRequired <= 49) color = '#ff9a02ff;'; 
+    if (s.levelRequired >= 50 && s.levelRequired <= 79) color = `#ff4d4d; box-shadow: 0 4px 12px rgba(255, 77, 77, 1);`;
     if (s.levelRequired >= 80 && s.levelRequired <= 119) color = 
     `linear-gradient(130deg, #00d4ff, #00aaff, #0088ff,  #007cf0);
      box-shadow: 
@@ -116,19 +110,20 @@ if (DOM.skillsList) {
     0 0 30px rgba(0, 212, 255, 0.35),
     0 0 45px rgba(0, 170, 255, 0.3),
     0 0 60px rgba(0, 136, 255, 0.25);`;
-
+    if (s.levelRequired >= 120) color = 'linear-gradient(135deg, #fffde4, #fff6b3, #ffeb85, #ffd94a, #ffc100); box-shadow:0 0 15px #ffcc00, 0 0 30px rgba(255, 204, 0, 0.5);  '; // Red - Late
     li.innerHTML = `
       <div class="skill-item">
         <div class="skill-header">
           <strong>${s.name}</strong>
           <span class="level-badge ${s.level >= s.maxLevel ? 'maxed maxed-blue' : ''}" style="background:${color} color: var(--text); padding:4px 8px; border-radius:12px; font-size:0.8rem;">
-            Lv ${s.level}/${s.maxLevel}
+            Lvl ${s.level}/${s.maxLevel}
           </span>
         </div>
         <small class="small-Animation" style="color:#aaa;">
-               ${unlocked ? `🔓 Unlocked ${s.level >= s.maxLevel ? `
-        <span class="max-badge" title="This skill is at maximum level">${getMaxLevelText(s)}</span>` : ''}`
-         : `🔒 Unlocks at Lv ${s.levelRequired}`}
+          ${unlocked ? `
+         ${s.level >= s.maxLevel ? `
+        <span class="max-badge" title="This skill is at maximum level">${getMaxLevelText(s)}</span>` : '🔓 Unlocked'}`
+         : `🔒 Unlocks at Lvl ${s.levelRequired}`}
           
         </small>
         </div>
@@ -150,21 +145,18 @@ if (DOM.skillsList) {
 }
 
 
-// Update profile
+
 if (DOM.profile.name) {
   DOM.profile.name.textContent = user.profile.name;
   DOM.profile.title.textContent = user.profile.title;
   DOM.profile.class.textContent = user.profile.class;
   DOM.profile.image.src = user.profile.image;
 
-// After updating profile info
 const profileCard = document.querySelector('.profile-card') || 
                      document.querySelector('#profileDisplay').parentElement;
 
 if (profileCard) {
-  // Remove old tier classes
   profileCard.classList.remove('srank', 'national');
-
   if (user.level >= 150) {
     profileCard.classList.add('national');
   } else if (user.level >= 100) {
@@ -172,47 +164,50 @@ if (profileCard) {
   }
 }
 
-// After setting profile info
-const avatarContainer = DOM.profile.image.parentElement; // .profile-avatar
+
+const avatarContainer = DOM.profile.title.parentElement;
   let badge = avatarContainer.querySelector('.rank-tier-badge');
 
   if (user.level >= 150) {
     if (!badge) {
       badge = document.createElement('div');
-      badge.className = 'rank-tier-badge mythic';
+      badge.className = 'rank-tier-badge level-150';
       avatarContainer.appendChild(badge);
     }
-    badge.textContent = 'MYTHIC';
+    badge.textContent = 'ACE III';
   } else if (user.level >= 100) {
     if (!badge) {
       badge = document.createElement('div');
-      badge.className = 'rank-tier-badge legend';
+      badge.className = 'rank-tier-badge level-100';
       avatarContainer.appendChild(badge);
     }
-    badge.textContent = 'LEGEND';
+    badge.textContent = 'ACE II';
+  } else if (user.level >= 50) {
+      if (!badge) {
+      badge = document.createElement('div');
+      badge.className = 'rank-tier-badge str-50';
+      avatarContainer.appendChild(badge);
+    }
+    badge.textContent = 'ACE I';
   } else {
-    // Remove badge if below 100
     if (badge) badge.remove();
   }
 }
-  // Auto-title based on level
 if (user.level >= 150){
-  user.profile.title = "DEATH"
+  user.profile.title = ""
 }
 else if (user.level >= 100) {
-  user.profile.title = "DOOM BRINGER";
+  user.profile.title = "";
 } else if (user.level >= 80) {
-  user.profile.title = "CALMITY";
+  user.profile.title = "";
 } else if (user.level >= 50) {
-  user.profile.title = "DESTROYER";
+  user.profile.title = "";
 } else if (user.level >= 30) {
-  user.profile.title = "NOVA"
+  user.profile.title = "Danger"
 } else {
   user.profile.title = "Rookie";
 }
-// Then update DOM
 DOM.profile.title.textContent = user.profile.title;
-  // Update rank & streak
   updateRankBadge();
   updateClassTheme();
   updateLevelCircle();
@@ -242,21 +237,17 @@ function updateStreak() {
   let streakCount = user.streak?.count || 0;
 
   if (today === lastActive) {
-    // Already logged today
+
   } else if (lastActive === prevDay(today)) {
-    // Continued streak
     streakCount++;
   } else {
-    // Streak broken
     streakCount = 1;
   }
-
-  // Update user
   if (!user.streak) user.streak = { count: 0, lastActive: null };
   user.streak.count = streakCount;
   user.streak.lastActive = today;
 
-  // 7-day reward
+
   if (streakCount === 7) {
     user.abilityPoints++;
     showMessage("🎁 7-Day Streak! +1 Ability Point!", 4000);
@@ -287,7 +278,7 @@ function updateRankBadge() {
 
   const wasRank = badge.textContent;
   let rank = 'E-Rank';
-  let cls = 'erank';
+  let cls = 'frank';
 
   if (user.level >= 150) {
     rank = 'National Rank';
@@ -318,7 +309,6 @@ function updateRankBadge() {
     showMessage(`🏆 NEW RANK: ${rank}!`, 3000);
     playSound('levelUpSound');
 
-    // Trigger special events
     if (rank === 'National Rank' && !user.achievements.nationalRankSeen) {
       user.achievements.nationalRankSeen = true;
       saveUserData();
@@ -430,7 +420,7 @@ function updateClassTheme() {
       light: '#ff7675',
       name: 'Berserker'
     },
-   hamza: {
+    hamza: {
      color: '#00fffbff',
       dark: '#0000ffff',
       light: '#0000ffff',
@@ -493,7 +483,6 @@ function completeQuest(name, expGain, skillBonus = null) {
     const skill = user.skills.find(s => s.name === skillBonus.name);
     if (skill && user.level >= skill.levelRequired) {
       skill.exp += skillBonus.exp || 10;
-      // Level up skill if enough exp
       while (skill.exp >= skill.expToNext && skill.level < skill.maxLevel) {
         skill.exp -= skill.expToNext;
         skill.level++;
@@ -505,11 +494,10 @@ function completeQuest(name, expGain, skillBonus = null) {
 
   let levels = 0;
 
-  // Faster leveling: EXP = 50 + (level * 10)
   while (user.exp >= user.nextLevelExp) {
     user.exp -= user.nextLevelExp;
     user.level++;
-    user.nextLevelExp = 50 + (user.level * 10); // Linear growth
+    user.nextLevelExp = 50 + (user.level * 10);
     user.abilityPoints++;
     levels++;
   }
@@ -601,7 +589,7 @@ function addCustomSkill() {
 
   $('skillName').value = '';
   $('skillLevelReq').value = '';
-  $('skillMaxLevel').value = ''; // reset if exists
+  $('skillMaxLevel').value = '';
 
   showMessage(`✨ Added: ${name} (Req: Lv${req})`, 2000);
   updateUI();
@@ -645,7 +633,7 @@ function toggleProfileEdit() {
 function saveProfile() {
   user.profile = {
     name: $('editName').value.trim() || 'Unknown Warrior',
-    title: $('editTitle').value.trim() || 'The Beginner', // ✅ Added
+    title: $('editTitle').value.trim() || 'The Beginner', 
     class: $('editClass').value.trim() || 'Warrior',
     image: $('editImage').value.trim() || 'https://via.placeholder.com/80'
   };
@@ -697,18 +685,13 @@ function showAchievementCard(rank, level, name) {
   const cardName = $('cardName');
   const badge = card.querySelector('.rank-badge-large');
 
-  // Populate data
   cardLevel.textContent = level;
   cardName.textContent = name;
   badge.textContent = rank;
 
-  // Apply color based on rank
   badge.className = 'rank-badge-large';
   if (rank === 'S-Rank') badge.classList.add('srank');
   else if (rank === 'A-Rank') badge.classList.add('arank');
-  // Add more if needed
-
-  // Show card and overlay
   card.style.display = 'block';
   overlay.style.display = 'block';
 }
@@ -718,23 +701,6 @@ function closeAchievementCard() {
   const overlay = $('cardOverlay');
   card.style.display = 'none';
   overlay.style.display = 'none';
-}
-
-function downloadAchievementCard() {
-  const card = $('achievementCard');
-  const content = card.querySelector('.card-content');
-
-  if (navigator.share && window.innerWidth < 1000) {
-    navigator.share({
-      title: `I reached S-Rank in SoloFitness!`,
-      text: `🏆 S-Rank Achieved! Level ${user.level} | ${user.profile.name}`
-    }).catch(() => {
-      fallbackToDownload(content);
-    });
-    return;
-  }
-
-  fallbackToDownload(content);
 }
 
 function fallbackToDownload(element) {
@@ -793,7 +759,6 @@ function showAchievementCard(rank, level, name) {
   cardName.textContent = name;
   badge.textContent = rank;
 
-  // Set color
   badge.className = 'rank-badge-large';
   badge.classList.add(
     rank.includes('S-') ? 'srank' :
@@ -843,14 +808,14 @@ function generateCardImage(element) {
 
 //Export Data
 function exportData() {
-  const dataStr = JSON.stringify(user, null, 2); // Pretty-printed
+  const dataStr = JSON.stringify(user, null, 2);
   const blob = new Blob([dataStr], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
   link.download = `solo-fitness-backup-${new Date().toISOString().split('T')[0]}.json`;
   link.click();
-  URL.revokeObjectURL(url); // Clean up
+  URL.revokeObjectURL(url); 
 }
 
 // ================ IMPORT DATA (LOAD BACKUP) ================
@@ -919,4 +884,3 @@ function upgradeSkill(index) {
 
 // ================ INIT ================
 loadUserData();
-
