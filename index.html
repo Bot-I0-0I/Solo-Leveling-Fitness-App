@@ -1,196 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shadow Fitness - Become the S-Rank</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Sound Effects -->
-  <audio id="levelUpSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio>
-  <audio id="questSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto"></audio>
-  <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-14.mp3" preload="auto"></audio>
-</head>
-<body>
-<header>
-  <div class="logo" style="font-variant: small-caps; margin-left: 10px;">Customs X</div>
-  <nav>
-    <ul>
-      <li><a href="#profileDisplay">Profile</a></li>
-      <li><a href="#exp">Stats</a></li>
-      <li><a href="#quests">Quests</a></li>
-      <li><a href="#skillsList">Skills</a></li>
-    </ul>
-  </nav>
-</header>
-  <div class="container">
-    <!-- Profile Card -->
-<section class="profile-card">
-  <h2>👤 Your Profile</h2>
-  <div id="profileDisplay">
-    <div class="profile-avatar">
-      <img id="profileImage" src="" alt="Profile" />
-      <div class="level-circle" id="levelCircle">Lvl<span id="levelTop">1</span></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nebula Command Center</title>
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Tailwind Config with CSS Variables -->
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              orbitron: ['Orbitron', 'sans-serif'],
+            },
+            colors: {
+              nebula: {
+                950: 'var(--bg-main)',
+                900: 'var(--bg-panel)',
+                800: 'var(--border-color)',
+                600: 'var(--color-primary)',
+                500: 'var(--color-primary)',
+                400: 'var(--color-secondary)',
+                accent: 'var(--color-accent)',
+                text: 'var(--color-text)',
+                dim: 'var(--color-text-dim)',
+                inv: 'var(--color-text-inv)',
+              }
+            },
+            animation: {
+              'spin-slow': 'spin 12s linear infinite',
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-nebula-950 text-nebula-text overflow-hidden selection:bg-nebula-500 selection:text-white">
+    
+    <!-- App Container -->
+    <div id="app" class="flex h-screen relative z-10">
+      <!-- Sidebar injected by JS -->
+      <aside id="sidebar-container" class="fixed inset-y-0 left-0 z-40 w-64 bg-nebula-950/95 backdrop-blur-xl border-r border-nebula-800 transform -translate-x-full md:translate-x-0 transition-transform duration-300 shadow-2xl"></aside>
+      
+      <!-- Backdrop for mobile -->
+      <div id="mobile-backdrop" class="fixed inset-0 bg-black/60 z-30 hidden md:hidden backdrop-blur-sm" onclick="closeMobileMenu()"></div>
+
+      <!-- Main Content -->
+      <main class="flex-1 md:ml-64 flex flex-col h-full overflow-hidden relative">
+        <!-- Header injected by JS -->
+        <div id="header-container" class="sticky top-0 z-20"></div>
+
+        <!-- View Content -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+          <div id="main-content" class="max-w-6xl mx-auto pb-20"></div>
+        </div>
+        
+        <!-- Toast Container -->
+        <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+      </main>
     </div>
-    <p><strong>Name:</strong> <span id="profileName">Unknown Warrior</span></p>
-    <p><strong>Title:</strong> <span id="profileTitle">The Beginner</span></p>
-    <div class="rank-badge" id="rankBadge">E-Rank</div>
-    <p><strong>Class:</strong> <span id="profileClass">Warrior</span></p>
-    <button onclick="playSound('clickSound'); toggleProfileEdit()">✏️ Edit</button>
-  </div>
 
-  <div id="profileEdit" style="display: none;">
-    <input type="text" id="editName" placeholder="Your Name" />
-    <input type="text" id="editTitle" placeholder="Title (e.g. Gym Monarch)" />
-    <input type="text" id="editClass" placeholder="Class (e.g. Warrior, Mage)" />
-    <input type="url" id="editImage" placeholder="Image URL" />
-    <button onclick="playSound('clickSound'); saveProfile()">💾 Save</button>
-    <button onclick="toggleProfileEdit()">Cancel</button>
-  </div>
-</section>
-
-    <header id="shadowfitness">
-      <h1 data-glow="">⚔️ Shadow Fitness</h1>
-      <div class="shadow-fitness"></div>
-      <p class="subtitle">The weakest become the strongest.<br>
-         <span class="footer-logo">Made by Muhammad Hamza</span> <br>
-      <a href="#" style="text-decoration: none;" class="primary-btn">Powered By Customs X</a> </p>
-      </p>
-    </header>
-
-    <!-- Streak Dashboard -->
-    <section class="streak-dashboard">
-      <h2>🔥 Daily Streak</h2>
-      <div class="streak-card">
-        <p>You've been active for <strong><span id="streakCount">0</span> days</strong> in a row!</p>
-        <div class="streak-progress" id="streakProgress">
-          <div class="day"></div>
-          <div class="day"></div>
-          <div class="day"></div>
-          <div class="day"></div>
-          <div class="day"></div>
-          <div class="day"></div>
-          <div class="day"></div>
-        </div>
-        <p class="streak-reward">Reach 7 days for +1 Ability Point!</p>
-      </div>
-    </section>
-
-    <!-- Character Status Panel -->
-    <section class="status-panel">
-      <h2>Character Status</h2>
-      <div class="stat">
-        <strong>Level:</strong> <span id="level">1</span>
-      </div>
-      <div class="stat">
-        <strong>EXP:</strong> <span id="exp">0</span> / <span id="nextLevelExp">100</span>
-      </div>
-      <progress id="expBar" value="0" max="100"></progress>
-      <p class="level-up-msg" id="levelUpMsg"></p>
-    </section>
-
-    <!-- Ability Points Panel -->
-    <section class="abilities">
-      <h2>Ability Tree</h2>
-      <p>You have <span id="ap">0</span> Ability Points to distribute.</p>
-      <div class="stats-grid">
-        <div class="stat-box">
-          <h3>💪 Strength</h3>
-          <p>Level: <span id="str">1</span></p>
-          <button onclick="playSound('clickSound'); allocateAP('str')">+</button>
-        </div>
-        <div class="stat-box">
-          <h3>🦵 Agility</h3>
-          <p>Level: <span id="agi">1</span></p>
-          <button onclick="playSound('clickSound'); allocateAP('agi')">+</button>
-        </div>
-        <div class="stat-box">
-          <h3>❤️ Vitality</h3>
-          <p>Level: <span id="vit">1</span></p>
-          <button onclick="playSound('clickSound'); allocateAP('vit')">+</button>
-        </div>
-        <div class="stat-box">
-          <h3>🧠 Energy</h3>
-          <p>Level: <span id="ene">1</span></p>
-          <button onclick="playSound('clickSound'); allocateAP('ene')">+</button>
+    <!-- Modals Layer -->
+    <div id="modals-layer">
+      
+      <!-- Mission Modal -->
+      <div id="mission-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity">
+        <div class="glass-panel rounded-xl p-6 w-full max-w-md shadow-2xl relative animate-fade-in border-t-4 border-t-nebula-500">
+          <button onclick="closeModal('mission-modal')" class="absolute top-4 right-4 text-nebula-dim hover:text-nebula-text transition-colors" aria-label="Close"><i data-lucide="x" width="20"></i></button>
+          <h3 class="font-orbitron text-xl text-nebula-text mb-6 border-b border-nebula-800 pb-2">Initialize Protocol</h3>
+          <form onsubmit="handleAddMission(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs text-nebula-dim mb-1 font-bold uppercase">Protocol Name</label>
+              <input name="title" placeholder="e.g. Morning Jog" required class="w-full bg-nebula-950 border border-nebula-800 rounded-lg p-3 text-nebula-text focus:border-nebula-500 outline-none">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+               <div>
+                 <label class="block text-xs text-nebula-dim mb-1 font-bold uppercase">XP Reward</label>
+                 <input name="points" type="number" placeholder="XP" value="50" required class="w-full bg-nebula-950 border border-nebula-800 rounded-lg p-3 text-nebula-text focus:border-nebula-500 outline-none">
+               </div>
+               <div>
+                 <label class="block text-xs text-nebula-dim mb-1 font-bold uppercase">Credit Reward</label>
+                 <input name="credits" type="number" placeholder="CR" value="25" required class="w-full bg-nebula-950 border border-nebula-800 rounded-lg p-3 text-nebula-text focus:border-nebula-500 outline-none">
+               </div>
+            </div>
+            
+            <div>
+                 <label class="block text-xs text-nebula-dim mb-1 font-bold uppercase">Protocol Icon</label>
+                 <select name="icon" class="w-full bg-nebula-950 border border-nebula-800 rounded-lg p-3 text-nebula-text focus:border-nebula-500 outline-none">
+                   <option value="code">Code</option>
+                   <option value="book-open">Read</option>
+                   <option value="dumbbell">Workout</option>
+                   <option value="brain">Focus</option>
+                   <option value="coffee">Break</option>
+                   <option value="target">Goal</option>
+                   <option value="shield">Defense</option>
+                   <option value="zap">Power</option>
+                   <option value="swords">Combat</option>
+                 </select>
+            </div>
+            
+            <div class="bg-nebula-900/50 p-4 rounded-lg border border-nebula-800">
+                <p class="text-xs text-nebula-dim mb-2 font-bold uppercase">Time Window (Optional)</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-[10px] text-nebula-dim mb-1">START TIME</label>
+                      <input name="startTime" type="time" class="w-full bg-nebula-950 border border-nebula-800 rounded-lg p-2 text-nebula-text text-sm focus:border-nebula-500 outline-none">
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-nebula-dim mb-1">END TIME</label>
+                      <input name="endTime" type="time" class="w-full bg-nebula-950 border border-nebula-800 rounded-lg p-2 text-nebula-text text-sm focus:border-nebula-500 outline-none">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="w-full bg-nebula-600 hover:opacity-90 text-white font-bold py-3 rounded-lg mt-4 shadow-lg shadow-nebula-600/20 font-orbitron tracking-widest uppercase text-sm transition-all transform active:scale-95">Initialize</button>
+          </form>
         </div>
       </div>
-    </section>
 
-    <!-- Quests -->
-    <section class="quests" id="quests">
-      <h2>Daily Quests</h2>
-      <button onclick="playSound('questSound'); completeQuest('Push-Ups', 20)">20 Push-Ups (+20 EXP)</button>
-      <button onclick="playSound('questSound'); completeQuest('Squats', 30)">30 Squats (+30 EXP)</button>
-      <button onclick="playSound('questSound'); completeQuest('Plank', 15)">1-Minute Plank (+15 EXP)</button>
-      <button onclick="playSound('questSound'); completeQuest('Jumping Jacks', 25)">50 Jumping Jacks (+25 EXP)</button>
-    </section>
-
-    <!-- Custom Tasks -->
-    <section class="custom-tasks">
-      <h2>Add Custom Quest</h2>
-      <p>Create your own workout challenges</p>
-      <div class="task-input">
-        <input type="text" id="taskName" placeholder="e.g. 100 Jumping Jacks" />
-        <input type="number" id="taskExp" placeholder="EXP (e.g. 25)" min="1" />
-        <button onclick="playSound('clickSound'); addCustomTask()">Add Quest</button>
-      </div>
-      <div class="user-quests">
-        <h3>Your Quests</h3>
-        <ul id="customTasksList"></ul>
-      </div>
-    </section>
-
-    <!-- Skills -->
-    <section class="skills-section">
-      <h2>Skill Tree</h2>
-      <p>Add your own skills or achievements:</p>
-      <div class="skill-input">
-        <input type="text" id="skillName" placeholder="e.g. Sprint Master" />
-        <input type="number" id="skillLevelReq" placeholder="Level Req (e.g. 2)" min="1" />
-        <input type="number" id="skillMaxLevel" placeholder="Max Level (1-10)" min="1" max="10" value="5">
-        <button onclick="playSound('clickSound'); addCustomSkill()">Add Skill</button>
-      </div>
-      <ul id="skillsList"></ul>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-      <button class="theme-toggle" onclick="playSound('clickSound'); toggleTheme()">🌓</button>
-      <button class="blue-neon-btn" onclick="exportData()">📤 Export Data</button>
-      <button class="blue-neon-btn" onclick="importData()">📂 Load Backup</button>
-    </footer>
-    <footer>
-      <div class="footer-content">
-        <div class="footer-logo" style="font-variant: small-caps;">Shadow Fitness</div>
-        <p class="footer-text">© 2025 CusomsX inc. All rights reserved.</p>
-        <div class="social-icons">
-          <a href="#"><i class="fab fa-discord"></i></a>
-          <a href="https://www.instagram.com/muhammad_hamza_ajmal/" target="_blank"><i class="fab fa-instagram"></i></a>
-          <a href=""><i class="fab fa-twitter" title="Not Available"></i></a>
-          <a href="https://github.com/Bot-I0-0I" target="_blank"><i class="fab fa-github"></i></a>
+      <!-- Shop Modal -->
+      <div id="shop-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity">
+        <div class="glass-panel rounded-xl p-6 w-full max-w-md shadow-2xl relative animate-fade-in border-t-4 border-t-nebula-400">
+          <button onclick="closeModal('shop-modal')" class="absolute top-4 right-4 text-nebula-dim hover:text-nebula-text transition-colors" aria-label="Close"><i data-lucide="x" width="20"></i></button>
+          <h3 class="font-orbitron text-xl text-nebula-text mb-6 border-b border-nebula-800 pb-2">Add Supply Item</h3>
+          <form onsubmit="handleAddShopItem(event)" class="space-y-4">
+            <div>
+               <label class="block text-xs text-nebula-dim mb-1 font-bold uppercase">Item Name</label>
+               <input name="title" placeholder="e.g. Energy Drink" required class="w-full bg-nebula-950 border border-nebula-800 rounded-lg p-3 text-nebula-text focus:border-nebula-500 outline-none">
+            </div>
+            <div>
+               <label class="block text-xs text-nebula-dim mb-1 font-bold uppercase">Description</label>
+               <input name="description" placeholder="Effect description" class="w-full bg-nebula-950 border border-nebula-800 rounded-lg p-3 text-nebula-text text-sm focus:border-nebula-500 outline-none">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+               <div>
+                  <label class="block text-xs text-nebula-dim mb-1 font-bold uppercase">Cost (Credits)</label>
+                  <input name="cost" type="number" placeholder="Cost" value="100" required class="w-full bg-nebula-950 border border-nebula-800 rounded-lg p-3 text-nebula-text focus:border-nebula-500 outline-none">
+               </div>
+               <div>
+                  <label class="block text-xs text-nebula-dim mb-1 font-bold uppercase">Icon</label>
+                  <select name="icon" class="w-full bg-nebula-950 border border-nebula-800 rounded-lg p-3 text-nebula-text focus:border-nebula-500 outline-none">
+                    <option value="coffee">Coffee</option>
+                    <option value="gamepad-2">Game</option>
+                    <option value="music">Music</option>
+                    <option value="pizza">Food</option>
+                    <option value="gift">Gift</option>
+                    <option value="zap">Energy</option>
+                    <option value="monitor">Tech</option>
+                    <option value="smile">Fun</option>
+                  </select>
+               </div>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-nebula-dim p-3 bg-nebula-900/50 rounded border border-nebula-800">
+               <input type="checkbox" name="consumable" id="is_consumable" checked class="w-4 h-4 rounded bg-nebula-950 border-nebula-800 text-nebula-500 focus:ring-nebula-500">
+               <label for="is_consumable" class="cursor-pointer select-none">Consumable (One-time use)</label>
+            </div>
+            <button type="submit" class="w-full bg-nebula-600 hover:opacity-90 text-white font-bold py-3 rounded-lg mt-4 shadow-lg shadow-nebula-600/20 font-orbitron tracking-widest uppercase text-sm transition-all transform active:scale-95">Add to Depot</button>
+          </form>
         </div>
-        <button onclick="resetApp()" class="primary-btn">Reset Progress</button>
       </div>
-    </footer>
-  </div>
 
-  <!-- ACHIEVEMENT CARD -->
-<div id="achievementCard" class="achievement-card" style="display: none;">
-  <div class="card-content">
-    <h2>Congratulations!</h2>
-    <p><strong>You've achieved:</strong></p>
-    <div class="rank-badge-large">S-Rank</div>
-    <p>Level <span id="cardLevel">100</span> | <span id="cardName">Unknown Warrior</span></p>
-    <button onclick="closeAchievementCard()">Close</button>
-    <button onclick="downloadAchievementCard()">Download</button>
-  </div>
-</div>
-<!-- Overlay -->
-<div id="cardOverlay" class="achievement-overlay" style="display: none;" onclick="closeAchievementCard()"></div>
+      <!-- Focus Timer Modal -->
+      <div id="focus-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity">
+         <div class="glass-panel rounded-full w-80 h-80 flex flex-col items-center justify-center relative shadow-[0_0_50px_rgba(59,130,246,0.2)] animate-fade-in">
+            <button onclick="closeFocusMode()" class="absolute top-8 right-8 text-nebula-dim hover:text-white transition-colors"><i data-lucide="x"></i></button>
+            <div class="text-nebula-accent font-orbitron text-sm tracking-widest uppercase mb-2">Focus Mode</div>
+            <div id="focus-timer-display" class="text-6xl font-mono font-bold text-nebula-text mb-4">25:00</div>
+            <div class="flex gap-4">
+              <button id="focus-toggle-btn" onclick="toggleFocusTimer()" class="w-12 h-12 rounded-full bg-nebula-600 text-white flex items-center justify-center hover:scale-110 transition-transform"><i data-lucide="play" width="20"></i></button>
+              <button onclick="resetFocusTimer()" class="w-12 h-12 rounded-full bg-nebula-800 text-nebula-dim flex items-center justify-center hover:text-white hover:bg-nebula-700 transition-colors"><i data-lucide="rotate-ccw" width="20"></i></button>
+            </div>
+            <div id="focus-status" class="absolute bottom-10 text-xs text-nebula-dim">Ready to engage</div>
+            
+            <!-- Circular Progress SVG -->
+            <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="48" fill="none" stroke="var(--border-color)" stroke-width="2" />
+              <circle id="focus-progress-circle" cx="50" cy="50" r="48" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-dasharray="301" stroke-dashoffset="0" class="transition-all duration-1000 ease-linear" />
+            </svg>
+         </div>
+      </div>
 
-  <script src="script.js"></script>
-</body>
+    </div>
 
+    <!-- Logic -->
+    <script src="script.js"></script>
+  </body>
 </html>
-
