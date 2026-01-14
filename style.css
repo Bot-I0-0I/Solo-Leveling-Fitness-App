@@ -1,9 +1,9 @@
 /* Theme Variables */
 :root {
   /* Default (Nebula - Dark Blue) */
-  --bg-main: #0f172a; /* Slate 900 */
-  --bg-panel: rgba(30, 41, 59, 0.7); /* Slate 800 */
-  --bg-input: rgba(15, 23, 42, 0.5);
+  --bg-main: #020617; /* Slate 950 */
+  --bg-panel: rgba(15, 23, 42, 0.7); /* Slate 900 transparent */
+  --bg-input: rgba(2, 6, 23, 0.6);
   --color-primary: #3b82f6;
   --color-secondary: #06b6d4;
   --color-accent: #f59e0b;
@@ -11,13 +11,13 @@
   --color-text-dim: #94a3b8;
   --color-text-inv: #000000;
   --border-color: rgba(59, 130, 246, 0.2);
-  --shadow-color: rgba(0, 0, 0, 0.3);
+  --shadow-color: rgba(0, 0, 0, 0.5);
   --neon-glow: 0 0 10px rgba(59, 130, 246, 0.3);
 }
 
 .theme-light {
-  --bg-main: #f1f5f9; /* Slate 100 */
-  --bg-panel: rgba(255, 255, 255, 0.85);
+  --bg-main: #f8fafc; /* Slate 50 */
+  --bg-panel: rgba(255, 255, 255, 0.9);
   --bg-input: #ffffff;
   --color-primary: #2563eb;
   --color-secondary: #0891b2;
@@ -31,23 +31,23 @@
 }
 
 .theme-cyberpunk {
-  --bg-main: #09090b; /* Zinc 950 */
-  --bg-panel: rgba(24, 24, 27, 0.85);
+  --bg-main: #050505; /* Zinc 950 */
+  --bg-panel: rgba(20, 20, 25, 0.9);
   --bg-input: #000000;
-  --color-primary: #facc15;
-  --color-secondary: #ec4899;
-  --color-accent: #06b6d4;
-  --color-text: #ffffff;
-  --color-text-dim: #a1a1aa;
+  --color-primary: #facc15; /* Yellow */
+  --color-secondary: #ec4899; /* Pink */
+  --color-accent: #06b6d4; /* Cyan */
+  --color-text: #e4e4e7;
+  --color-text-dim: #71717a;
   --color-text-inv: #000000;
-  --border-color: rgba(250, 204, 21, 0.3);
-  --shadow-color: rgba(0, 0, 0, 0.5);
-  --neon-glow: 0 0 10px rgba(250, 204, 21, 0.5);
+  --border-color: rgba(250, 204, 21, 0.4);
+  --shadow-color: rgba(0, 0, 0, 0.8);
+  --neon-glow: 0 0 8px rgba(250, 204, 21, 0.6);
 }
 
 .theme-matrix {
-  --bg-main: #020617;
-  --bg-panel: rgba(0, 20, 0, 0.8);
+  --bg-main: #000000;
+  --bg-panel: rgba(0, 20, 0, 0.9);
   --bg-input: #001000;
   --color-primary: #22c55e;
   --color-secondary: #15803d;
@@ -55,33 +55,45 @@
   --color-text: #dcfce7;
   --color-text-dim: #4ade80;
   --color-text-inv: #000000;
-  --border-color: rgba(34, 197, 94, 0.3);
-  --shadow-color: rgba(0, 20, 0, 0.5);
-  --neon-glow: 0 0 10px rgba(34, 197, 94, 0.5);
+  --border-color: rgba(34, 197, 94, 0.5);
+  --shadow-color: rgba(0, 20, 0, 0.8);
+  --neon-glow: 0 0 8px rgba(34, 197, 94, 0.6);
 }
 
 body {
   background-color: var(--bg-main);
   color: var(--color-text);
-  /* Simple, professional smooth gradient. No laggy patterns. */
-  background: radial-gradient(circle at 50% 0%, var(--border-color), transparent 70%), var(--bg-main);
+  background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.05), transparent 80%), var(--bg-main);
   background-attachment: fixed;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* CRT Scanlines */
+.scanlines {
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0,0,0,0.1) 50%,
+    rgba(0,0,0,0.1)
+  );
+  background-size: 100% 4px;
 }
 
 /* Core UI Styles */
 .glass-panel {
   background-color: var(--bg-panel);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
-  box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
-  transition: all 0.2s ease-out;
+  box-shadow: 0 8px 32px 0 var(--shadow-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-panel:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 0 15px var(--border-color);
+  box-shadow: 0 0 20px var(--border-color);
+  transform: translateY(-2px);
 }
 
 .neon-text {
@@ -109,25 +121,39 @@ body {
 button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px var(--shadow-color);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
 }
 
 /* Utility Animations */
 .animate-fade-in {
-  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
 .animate-pulse-slow {
   animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-.animate-pulse-fast {
-    animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+/* Holographic Button */
+.holographic-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.holographic-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transition: 0.5s;
+}
+.holographic-btn:hover::before {
+  left: 100%;
 }
 
 /* Form Styling */
@@ -135,10 +161,11 @@ input, select {
   transition: all 0.2s;
   background-color: var(--bg-input);
   color: var(--color-text);
+  font-family: 'Share Tech Mono', monospace;
 }
 input:focus, select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--border-color);
+  box-shadow: 0 0 0 1px var(--color-primary);
 }
 
 /* Range Slider */
@@ -177,13 +204,142 @@ input[type="range"]::-webkit-slider-runnable-track {
   animation: buff-pulse 2s infinite;
 }
 
-/* Skill Bar Pattern */
-.skill-bar-pattern {
-    background-image: repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 10px,
-      rgba(0,0,0,0.2) 10px,
-      rgba(0,0,0,0.2) 20px
-    );
+/* --- Skill Tree Styles --- */
+
+.skill-tree-container {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+}
+
+.skill-tree-wrapper {
+  transform-origin: center center;
+  transition: transform 0.1s ease-out;
+  cursor: grab;
+}
+.skill-tree-wrapper:active {
+  cursor: grabbing;
+}
+
+/* SVG Connections */
+.skill-connection {
+  stroke: var(--color-text-dim);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+  opacity: 0.3;
+  transition: all 0.5s ease;
+}
+
+.skill-connection.active {
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  stroke-dasharray: none;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 4px var(--color-primary));
+  animation: dashFlow 20s linear infinite;
+}
+
+/* Skill Nodes */
+.skill-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg-panel);
+  border: 2px solid var(--color-text-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.skill-node:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+  z-index: 20;
+}
+
+.skill-node.locked {
+  opacity: 0.5;
+  filter: grayscale(1) brightness(0.7);
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+.skill-node.unlockable {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  animation: nodePulse 2s infinite;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+.skill-node.unlocked {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
+}
+
+.skill-node.unlocked::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--color-primary);
+  opacity: 0.3;
+  animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes nodePulse {
+  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+@keyframes ping {
+  75%, 100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Skill Tooltip */
+.skill-tooltip {
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  width: 240px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid var(--color-primary);
+  padding: 16px;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  z-index: 30;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8);
+}
+
+.skill-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -6px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--color-primary) transparent transparent transparent;
+}
+
+.skill-node:hover .skill-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }

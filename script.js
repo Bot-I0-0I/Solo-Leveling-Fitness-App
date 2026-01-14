@@ -8,7 +8,7 @@ const DEFAULT_DATA = {
   user: {
     name: "Commander",
     avatarType: "emoji", 
-    avatarValue: "👨‍🚀",
+    avatarValue: "⚡",
     level: 1,
     xp: 0,
     wallet: 150,
@@ -44,8 +44,8 @@ const DEFAULT_DATA = {
 
 const LEVEL_THRESHOLDS = [0, 500, 1500, 3000, 5000, 8000, 12000, 18000, 25000];
 const SKILL_THRESHOLDS = [0, 100, 300, 600, 1000, 1500, 2100, 2800, 3600, 5000];
-const RANKS = ["Cadet", "Ensign", "Lieutenant", "Commander", "Captain", "Major", "Colonel", "General", "Admiral"];
-const AVATARS = ["👨‍🚀", "🤖", "👽", "🦁", "💀", "👾", "🦊", "⚡", "🌌", "🦾"];
+const RANKS = ["E", "D", "C", "B", "A", "S", "National", "Monarch", "Transcendent"];
+const AVATARS = ["⚡","H","A", "M", "Z", "J", "U", "N", "S", "B", "C"];
 
 // Mapping icons to skills
 const ICON_SKILL_MAP = {
@@ -593,7 +593,7 @@ function renderSidebar() {
     <div class="p-6 border-b border-nebula-800 flex items-center gap-3 relative overflow-hidden group">
       <div class="absolute inset-0 bg-gradient-to-r from-nebula-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
       <i data-lucide="hexagon" class="text-nebula-600 animate-pulse-slow relative z-10 fill-nebula-600/20"></i>
-      <h1 class="font-orbitron text-xl font-bold tracking-widest text-nebula-text relative z-10">NEBULA <span class="text-nebula-600">OS</span></h1>
+      <h1 class="font-orbitron text-xl font-bold tracking-widest text-nebula-text relative z-10">Monarch <span class="text-nebula-600">OS</span></h1>
     </div>
     <div class="p-6 text-center border-b border-nebula-800 bg-nebula-900/30 group">
       <div class="w-20 h-20 mx-auto rounded-full border-2 border-nebula-600 p-[2px] mb-3 shadow-lg shadow-nebula-600/20 overflow-hidden cursor-pointer hover:shadow-nebula-600/40 transition-shadow">
